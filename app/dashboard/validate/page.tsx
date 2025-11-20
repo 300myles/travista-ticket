@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { QRScanner } from "@/components/qr-scanner";
 import { toast } from "sonner";
+import getDate from "@/utils/getDate";
 
 interface ValidatedTicket {
   ticketUID: string;
@@ -13,6 +14,7 @@ interface ValidatedTicket {
   buyerEmail: string;
   status: "valid" | "used" | "invalid";
   ticketName: string;
+  usedAt: Date | null;
 }
 
 export default function ValidatePage() {
@@ -44,6 +46,7 @@ export default function ValidatePage() {
           buyerEmail: ticket.buyerEmail,
           status,
           ticketName: ticket.ticketName || "Ticket",
+          usedAt: ticket?.usedAt || null,
         });
 
         if (status === "used") {
@@ -80,15 +83,32 @@ export default function ValidatePage() {
 
   const markAsUsed = async () => {
     if (!validatedTicket) return;
-
+  
     try {
-      // Simulate successful API call
+      const res = await fetch(`/api/purchase/${validatedTicket.ticketUID}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ used: true }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        toast.error(data.error || "Failed to update ticket");
+        return;
+      }
+  
       toast.success("Ticket marked as used");
       setValidatedTicket(null);
+  
     } catch (error) {
+      console.error("Mark ticket used error:", error);
       toast.error("Failed to mark ticket as used");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
@@ -183,6 +203,15 @@ export default function ValidatePage() {
                   {validatedTicket.buyerEmail}
                 </p>
               </div>
+
+              {validatedTicket?.usedAt && (
+                <div>
+                <p className="text-muted-foreground text-sm">Used at</p>
+                <p className="text-foreground font-semibold">
+                  {validatedTicket?.usedAt && getDate(validatedTicket?.usedAt)}
+                </p>
+              </div>
+              )}
             </div>
 
             <div className="flex gap-3">

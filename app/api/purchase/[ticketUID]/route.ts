@@ -31,29 +31,31 @@ export async function GET(_request: NextRequest) {
   }
 }
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { ticketUID: string } }
+) {
   try {
     await connectDB()
-    const { used } = await request.json()
 
-    const params = request.nextUrl.pathname.split("/")
-    const ticketUID = params[params.length - 1]
+    const { used } = await request.json()
+    const {ticketUID} = await params
+
     const purchase = await Purchase.findOne({ ticketUID })
+
     if (!purchase) {
       return NextResponse.json({ error: "Purchase not found" }, { status: 404 })
     }
 
     purchase.used = used
-    if (used) {
-      purchase.usedAt = new Date()
-    } else {
-      purchase.usedAt = undefined
-    }
+    purchase.usedAt = used ? new Date() : undefined
 
     await purchase.save()
+
     return NextResponse.json({ success: true, purchase })
   } catch (error) {
     console.error("Update purchase error:", error)
     return NextResponse.json({ error: "Failed to update purchase" }, { status: 500 })
   }
 }
+
