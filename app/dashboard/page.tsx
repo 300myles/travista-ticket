@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 Total Revenue
               </div>
               <div className="text-3xl font-bold text-foreground mt-2">
-                ₦{stats.totalRevenue.toLocaleString()}
+                ₦{stats?.totalRevenue?.toLocaleString()}
               </div>
             </div>
             <div className="p-6 border border-border rounded-lg bg-muted">

@@ -7,10 +7,12 @@ export interface IUser extends Document {
   isVerified: boolean
   verifyToken?: string
   walletBalance: number
+  availableBalance: number
   bankAccount?: {
     accountName: string
     accountNumber: string
     bankName: string
+    bankCode: string
     verified: boolean
   }
   transactions: Array<{
@@ -32,10 +34,12 @@ const userSchema = new Schema<IUser>(
     isVerified: { type: Boolean, default: false },
     verifyToken: { type: String },
     walletBalance: { type: Number, default: 0 },
+    availableBalance: { type: Number, default: 0 },
     bankAccount: {
       accountName: { type: String },
       accountNumber: { type: String },
       bankName: { type: String },
+      bankCode: { type: String },
       verified: { type: Boolean, default: false },
     },
     transactions: [

@@ -6,7 +6,14 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Banks from "@/data/banks.json";
 
 interface UserProfile {
   _id: string;
@@ -18,6 +25,7 @@ interface UserProfile {
     accountName: string;
     accountNumber: string;
     bankName: string;
+    bankCode: string;
     verified: boolean;
   };
 }
@@ -39,8 +47,11 @@ export default function SettingsPage() {
   // Account form state
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankCode, setBankCode] = useState("");
+  const allbanks = Banks.banks
+  const [bank, setBank] = useState({
+    name: "",
+    code: "",
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -56,7 +67,10 @@ export default function SettingsPage() {
           if (data.user.bankAccount) {
             setAccountName(data.user.bankAccount.accountName);
             setAccountNumber(data.user.bankAccount.accountNumber);
-            setBankName(data.user.bankAccount.bankName);
+            setBank({
+              name: data.user.bankAccount.bankName,
+              code: data.user.bankAccount.bankCode,
+            });
           }
         }
       } catch (error) {
@@ -66,6 +80,19 @@ export default function SettingsPage() {
         setLoading(false);
       }
     };
+
+    // async function fetchBanks() {
+    //   const res = await fetch("/api/banks");
+    //   const data = await res.json();
+    //   console.log(data);
+
+    //   // Save to banks.json
+    //   // const fs = require("fs");
+    //   // fs.writeFileSync("banks.json", JSON.stringify(data, null, 2));
+
+    //   console.log("Banks saved to banks.json");
+    // }
+    // fetchBanks();
 
     fetchUser();
   }, []);
@@ -141,7 +168,7 @@ export default function SettingsPage() {
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!accountName || !accountNumber || !bankName || !bankCode) {
+    if (!accountName || !accountNumber || !bank?.name || !bank?.code) {
       toast.error("Please fill all fields");
       return;
     }
@@ -155,8 +182,8 @@ export default function SettingsPage() {
         body: JSON.stringify({
           accountName,
           accountNumber,
-          bankName,
-          bankCode,
+          bankName: bank?.name,
+          bankCode: bank?.code,
         }),
       });
 
@@ -385,45 +412,32 @@ export default function SettingsPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Bank Name
+                      Bank
                     </label>
-                    <Input
-                      placeholder="Enter bank name"
-                      value={bankName}
-                      onChange={(e) => setBankName(e.target.value)}
-                    />
-                  </div>
+                    <Select
+                      value={bank?.code}
+                      onValueChange={(e) => {
+                        setBank(
+                          () =>
+                            allbanks.find((i) => i.code === e) || {
+                              name: "",
+                              code: "",
+                            }
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a bank" />
+                      </SelectTrigger>
 
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Bank Code
-                    </label>
-                    {/* <Input
-                      placeholder="Enter bank code"
-                      value={bankCode}
-                      onChange={(e) => setBankCode(e.target.value)}
-                    /> */}
-                      <Select
-                        onValueChange={(value) => setBankCode(value)}
-                        value={bankCode}
-                      >
-                        <SelectTrigger >
-                          <SelectValue placeholder="Select a bank" />
-                          <SelectContent>
-                            <SelectItem value="001">Access Bank</SelectItem>
-                            <SelectItem value="044">GTBank</SelectItem>
-                            <SelectItem value="057">Zenith Bank</SelectItem>
-                            <SelectItem value="011">First Bank</SelectItem>
-                            <SelectItem value="058">Union Bank</SelectItem>
-                            <SelectItem value="232">Wema Bank</SelectItem>
-                            <SelectItem value="033">Ecobank</SelectItem>
-                            <SelectItem value="214">Sterling Bank</SelectItem>
-                            <SelectItem value="035">Fidelity Bank</SelectItem>
-                            <SelectItem value="070">Stanbic IBTC Bank</SelectItem>
-                            </SelectContent>
-                            {/* Add more banks as needed */}
-                        </SelectTrigger>
-                      </Select>
+                      <SelectContent>
+                        {allbanks?.map((bank, i) => (
+                          <SelectItem key={i} value={bank?.code}>
+                            {bank?.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <Button

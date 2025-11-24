@@ -6,6 +6,7 @@ import { generateUniqueTicketUID } from "@/lib/utils"
 import { sendTicketEmail } from "@/lib/mailer"
 import { sendTicketWhatsApp } from "@/lib/whatsapp"
 import { type NextRequest, NextResponse } from "next/server"
+import { User } from "@/lib/models/user"
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,26 +40,32 @@ export async function POST(request: NextRequest) {
 
         const ticket = await Ticket.findById(purchase.ticketId)
         if (ticket) {
+          const ticketType = ticket.ticketTypes.find((t: any) => t.id === purchase.ticketTypeId)
+          if (ticketType) {
+            ticketType.sold += 1
+          }
+
           ticket.totalSold += 1
           ticket.totalRevenue += purchase.amount
           await ticket.save()
+
+          const user = await User.findById(ticket.organizerId)
+          if (user) {
+            user.walletBalance += Number.parseInt(purchase.amount) * 0.9 // 10% platform fee
+            await user.save()
+          }
         }
 
         try {
           await sendTicketEmail(
             purchase.buyerEmail,
             purchase.buyerName,
-            ticket?.name || "Your Ticket",
+            purchase.ticketName,
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/qrcode?uid=${purchase.ticketUID}`,
-            `${process.env.NEXT_PUBLIC_BASE_URL}/ticket/${purchase.ticketUID}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/ticket/success/${purchase.ticketUID}`,
           )
 
-          await sendTicketWhatsApp(
-            purchase.buyerWhatsapp,
-            purchase.buyerName,
-            ticket?.name || "Your Ticket",
-            purchase.ticketUID,
-          )
+          await sendTicketWhatsApp(purchase.buyerWhatsapp, purchase.buyerName, purchase.ticketName, purchase.ticketUID)
         } catch (error) {
           console.error("Error sending notifications:", error)
         }
@@ -101,26 +108,32 @@ export async function GET(request: NextRequest) {
 
         const ticket = await Ticket.findById(purchase.ticketId)
         if (ticket) {
+          const ticketType = ticket.ticketTypes.find((t: any) => t.id === purchase.ticketTypeId)
+          if (ticketType) {
+            ticketType.sold += 1
+          }
+
           ticket.totalSold += 1
           ticket.totalRevenue += purchase.amount
           await ticket.save()
+
+          const user = await User.findById(ticket.organizerId)
+          if (user) {
+            user.walletBalance += Number.parseInt(purchase.amount) * 0.9
+            await user.save()
+          }
         }
 
         try {
           await sendTicketEmail(
             purchase.buyerEmail,
             purchase.buyerName,
-            ticket?.name || "Your Ticket",
+            purchase.ticketName,
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/qrcode?uid=${purchase.ticketUID}`,
-            `${process.env.NEXT_PUBLIC_BASE_URL}/ticket/${purchase.ticketUID}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/ticket/success/${purchase.ticketUID}`,
           )
 
-          await sendTicketWhatsApp(
-            purchase.buyerWhatsapp,
-            purchase.buyerName,
-            ticket?.name || "Your Ticket",
-            purchase.ticketUID,
-          )
+          await sendTicketWhatsApp(purchase.buyerWhatsapp, purchase.buyerName, purchase.ticketName, purchase.ticketUID)
         } catch (error) {
           console.error("Error sending notifications:", error)
         }

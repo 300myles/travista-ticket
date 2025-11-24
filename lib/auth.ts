@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
 import { type NextRequest } from "next/server"
-import { User } from "@/lib/models/user"
 import { connectDB } from "@/lib/db"
+import { User } from "./models/user"
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
 

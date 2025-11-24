@@ -1,55 +1,64 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import PurchaseForm from "@/components/purchase-form"
-import TicketDisplay from "@/components/ticket-display"
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import PurchaseForm from "@/components/purchase-form";
+import TicketDisplay from "@/components/ticket-display";
+
+interface TicketType {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  sold: number;
+  description?: string;
+}
 
 interface Ticket {
-  _id: string
-  name: string
-  price: number
-  eventDate: string
-  flyerUrl: string
-  organizerId: string
-  description: string
+  _id: string;
+  name: string;
+  eventDate: string;
+  flyerUrl: string;
+  organizerId: string;
+  description?: string;
+  ticketTypes: TicketType[];
 }
 
 export default function PublicTicketPage() {
-  const params = useParams()
-  const slug = params.slug as string
-  const [ticket, setTicket] = useState<Ticket | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const params = useParams();
+  const slug = params.slug as string;
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchTicket = async () => {
       try {
-        const res = await fetch(`/api/tickets/${slug}`)
-        const data = await res.json()
+        const res = await fetch(`/api/tickets/${slug}`);
+        const data = await res.json();
 
         if (!res.ok) {
-          setError("Ticket not found")
-          return
+          setError("Ticket not found");
+          return;
         }
 
-        setTicket(data.ticket)
+        setTicket(data.ticket);
       } catch (err) {
-        setError("Failed to load ticket")
+        setError("Failed to load ticket");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchTicket()
-  }, [slug])
+    fetchTicket();
+  }, [slug]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="inline-block w-8 h-8 border-4 border-foreground border-t-transparent rounded-full animate-spin" />
       </div>
-    )
+    );
   }
 
   if (error || !ticket) {
@@ -60,7 +69,7 @@ export default function PublicTicketPage() {
           <p className="text-muted-foreground">{error || "Ticket not found"}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -76,5 +85,5 @@ export default function PublicTicketPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

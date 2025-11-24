@@ -19,6 +19,7 @@ interface TicketData {
   slug: string;
   amount: number;
   flyerUrl: string;
+  ticketTypeId: string; // added ticket type info
 }
 
 export default function TicketSuccessPage() {
@@ -46,9 +47,9 @@ export default function TicketSuccessPage() {
             amount: data?.purchase.amount,
             slug: data?.purchase.slug,
             flyerUrl: data?.purchase.flyerUrl,
+            ticketTypeId: data?.purchase.ticketTypeId,
           });
 
-          // Generate QR code
           const qrDataUrl = await QRCode.toDataURL(data.purchase.ticketUID);
           setQrCode(qrDataUrl);
         }
@@ -66,18 +67,15 @@ export default function TicketSuccessPage() {
     if (!ticketRef.current) return;
 
     try {
-      // Convert component to PNG
       const dataUrl = await htmlToImage.toPng(ticketRef.current, {
         quality: 1,
       });
 
-      // Download PNG
       const link = document.createElement("a");
       link.download = `${ticket?.slug + "-" + ticket?.buyerEmail}.png`;
       link.href = dataUrl;
       link.click();
 
-      // OPTIONAL: Create PDF version too
       const pdf = new jsPDF("p", "mm", "a4");
       const imgProps = pdf.getImageProperties(dataUrl);
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -116,7 +114,7 @@ export default function TicketSuccessPage() {
 
   return (
     <div className="min-h-screen bg-background py-12 px-4 md:px-8">
-      <div className=" mx-auto">
+      <div className="mx-auto">
         <Card
           className="grid p-0 grid-cols-1 overflow-hidden md:grid-cols-2"
           ref={ticketRef}
@@ -147,6 +145,9 @@ export default function TicketSuccessPage() {
                 <h2 className="text-lg md:text-2xl font-semibold text-foreground ">
                   {ticket.ticketName}
                 </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {ticket.eventName}
+                </p>
               </div>
             </div>
 
@@ -164,25 +165,35 @@ export default function TicketSuccessPage() {
 
             <div className="grid grid-cols-2 gap-4 bg-card p-4 rounded-lg">
               <div>
-                <p className="text-muted-foreground text-[12px] md:text-sm">Ticket ID</p>
+                <p className="text-muted-foreground text-[12px] md:text-sm">
+                  Ticket ID
+                </p>
                 <p className="text-foreground text-sm md:text-base font-semibold">
                   {ticket.ticketUID}
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-[12px] md:text-sm">Amount</p>
+                <p className="text-muted-foreground text-[12px] md:text-sm">
+                  Amount
+                </p>
                 <p className="text-foreground text-sm md:text-base font-semibold">
-                  ₦{ticket.amount.toLocaleString()}
+                  {ticket.amount === 0
+                    ? "FREE"
+                    : `₦${ticket.amount.toLocaleString()}`}
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-[12px] md:text-sm">Name</p>
+                <p className="text-muted-foreground text-[12px] md:text-sm">
+                  Name
+                </p>
                 <p className="text-foreground text-sm md:text-base font-semibold">
                   {ticket.buyerName}
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-[12px] md:text-sm">Email</p>
+                <p className="text-muted-foreground text-[12px] md:text-sm">
+                  Email
+                </p>
                 <p className="text-foreground font-semibold text-[12px] md:text-sm">
                   {ticket.buyerEmail}
                 </p>
@@ -198,11 +209,11 @@ export default function TicketSuccessPage() {
                 Download Ticket
               </Button>
               <Button
-                onClick={() => router.push(`/tickets/${ticket?.slug}`)}
+                onClick={() => router.push(`/`)}
                 className="flex-1 text-sm md:text-base"
                 variant="outline"
               >
-                View Event Page
+                Back Home
               </Button>
             </div>
 

@@ -2,6 +2,7 @@ import mongoose, { Schema, type Document } from "mongoose"
 
 export interface IPurchase extends Document {
   ticketId: mongoose.Types.ObjectId
+  ticketTypeId: string // added to track which ticket type was purchased
   buyerName: string
   buyerEmail: string
   buyerPhone: string
@@ -20,6 +21,7 @@ export interface IPurchase extends Document {
 const purchaseSchema = new Schema<IPurchase>(
   {
     ticketId: { type: Schema.Types.ObjectId, ref: "Ticket", required: true },
+    ticketTypeId: { type: String, required: true }, // added ticket type reference
     buyerName: { type: String, required: true },
     buyerEmail: { type: String, required: true },
     buyerPhone: { type: String, required: true },
@@ -28,7 +30,11 @@ const purchaseSchema = new Schema<IPurchase>(
     ticketUID: { type: String, unique: true, sparse: true },
     qrPayload: { type: String },
     amount: { type: Number, required: true },
-    paymentStatus: { type: String, default: "pending" },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "completed", "failed"],
+      default: "pending",
+    },
     paymentReference: { type: String },
     used: { type: Boolean, default: false },
     usedAt: { type: Date },

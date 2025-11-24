@@ -53,26 +53,26 @@ export function TicketsList() {
         <div key={ticket._id} className="border border-border rounded-lg p-6 hover:bg-muted transition-smooth">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="text-lg font-bold text-foreground">{ticket.name}</h3>
-              <p className="text-sm text-muted-foreground">₦{ticket.price.toLocaleString()}</p>
+              <h3 className="text-lg font-bold text-foreground">{ticket?.name}</h3>
+              <p className="text-sm text-muted-foreground">₦{ticket?.price?.toLocaleString()}</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-foreground">{ticket.totalSold}</div>
+              <div className="text-2xl font-bold text-foreground">{ticket?.totalSold}</div>
               <p className="text-xs text-muted-foreground">Sold</p>
             </div>
           </div>
 
-          <p className="text-sm text-muted-foreground mb-4">Event: {new Date(ticket.eventDate).toLocaleDateString()}</p>
+          <p className="text-sm text-muted-foreground mb-4">Event: {new Date(ticket?.eventDate).toLocaleDateString()}</p>
 
           <div className="flex gap-2">
             <Link
-              href={`/tickets/${ticket.slug}`}
+              href={`/tickets/${ticket?.slug}`}
               className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-smooth"
             >
               View Public Page
             </Link>
             <Link
-              href={`/dashboard/tickets/${ticket.slug}`}  className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-smooth">
+              href={`/dashboard/tickets/${ticket?.slug}`}  className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-smooth">
               View Sales
             </Link>
             <button onClick={() => {
