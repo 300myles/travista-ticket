@@ -131,8 +131,8 @@ export function CreateTicketModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-background border border-border rounded-lg max-w-2xl w-full p-6 my-8">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 ">
+      <div className="bg-background border max-h-[90dvh] overflow-scroll border-border rounded-lg max-w-2xl w-full p-6 my-8">
         <h2 className="text-2xl font-bold text-foreground mb-4">
           Create New Event
         </h2>
@@ -167,13 +167,12 @@ export function CreateTicketModal({
               <label className="block text-sm font-medium text-foreground mb-1">
                 Description
               </label>
-              <input
-                type="text"
+              <textarea
                 name="description"
                 value={eventData.description}
                 onChange={handleEventChange}
                 placeholder="e.g., A great night of music and fun"
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-smooth"
+                className="w-full px-3 py-2 border h-12 min-h-12 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-smooth"
               />
             </div>
 
@@ -233,8 +232,7 @@ export function CreateTicketModal({
                       }
                       className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-smooth"
                     />
-                    <input
-                      type="text"
+                    <textarea
                       placeholder="Description (optional)"
                       value={type.description}
                       onChange={(e) =>
@@ -244,7 +242,7 @@ export function CreateTicketModal({
                           e.target.value
                         )
                       }
-                      className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-smooth"
+                      className="px-3 py-2 border border-border h-12 min-h-12 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-smooth"
                     />
                     <input
                       type="number"

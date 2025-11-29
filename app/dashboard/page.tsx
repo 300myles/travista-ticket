@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { CreateTicketModal } from "@/components/create-ticket-modal";
 import { TicketsList } from "@/components/tickets-list";
