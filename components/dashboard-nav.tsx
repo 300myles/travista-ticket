@@ -17,7 +17,7 @@ export function DashboardNav({ user }: { user?: any } = {}) {
   };
 
   return (
-    <nav className="bg-white/20 hidden md:block sticky top-0 z-50 border-b border-border">
+    <nav className="bg-white/20 backdrop-blur-sm hidden md:block sticky top-0 z-50 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
         <Link href="/dashboard" className="text-2xl font-bold text-foreground">
           Travista

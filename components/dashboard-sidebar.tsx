@@ -40,7 +40,7 @@ export function DashboardSidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:static inset-y-0 left-0 w-64 bg-card border-r border-border transform transition-transform duration-300 z-40 ${
+        className={`fixed md:static inset-y-0 h-dvh left-0 w-64 bg-card border-r border-border transform transition-transform duration-300 z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
