@@ -13,7 +13,7 @@ export function DashboardSidebar() {
 
   const menuItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/tickets", label: "My Tickets", icon: Ticket },
+    { href: "/dashboard/events", label: "My Events", icon: Ticket },
     { href: "/dashboard/validate", label: "Validate Tickets", icon: CheckCircle },
     { href: "/dashboard/withdraw", label: "Withdrawals", icon: DollarSign },
     { href: "/dashboard/settings", label: "Settings", icon: Settings },

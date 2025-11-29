@@ -13,7 +13,7 @@ export default function EventDetailPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto p-6">
         <div className="mb-8 flex items-center justify-between">
-          <Link href="/dashboard/tickets">
+          <Link href="/dashboard/events">
             <Button variant="outline">← Back to Events</Button>
           </Link>
           <Link href={`/tickets/${slug}`} target="_blank">

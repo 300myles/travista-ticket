@@ -106,7 +106,7 @@ export default function DashboardTicketsList({ organizerId = "" }: DashboardTick
 
             {/* Actions */}
             <div className="flex gap-2">
-              <Link href={`/dashboard/tickets/${ticket.slug}`} className="flex-1">
+              <Link href={`/dashboard/events/${ticket.slug}`} className="flex-1">
                 <Button variant="outline" className="w-full bg-transparent">
                   View Details
                 </Button>

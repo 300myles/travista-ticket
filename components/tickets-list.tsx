@@ -72,7 +72,7 @@ export function TicketsList() {
               View Public Page
             </Link>
             <Link
-              href={`/dashboard/tickets/${ticket?.slug}`}  className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-smooth">
+              href={`/dashboard/events/${ticket?.slug}`}  className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-smooth">
               View Sales
             </Link>
             <button onClick={() => {
